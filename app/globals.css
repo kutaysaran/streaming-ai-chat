@@ -1,26 +1,79 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 0 0% 100%;
+  --foreground: 180 6% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 180 6% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 180 6% 10%;
+  --primary: 141 76% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 144 29% 94%;
+  --secondary-foreground: 180 6% 10%;
+  --muted: 144 12% 92%;
+  --muted-foreground: 180 4% 40%;
+  --accent: 141 76% 36%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 180 9% 90%;
+  --input: 180 9% 90%;
+  --ring: 141 76% 36%;
+  --radius: 12px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --background: 180 6% 10%;
+  --foreground: 0 0% 100%;
+  --card: 180 6% 12%;
+  --card-foreground: 0 0% 100%;
+  --popover: 180 6% 12%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 141 76% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 180 6% 16%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 180 6% 16%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 141 76% 36%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 180 5% 20%;
+  --input: 180 5% 20%;
+  --ring: 141 76% 36%;
+  --radius: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  @apply border-border;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-background text-foreground antialiased;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+.bg-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.hero-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(74, 222, 128, 0.25), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(74, 222, 128, 0.18), transparent 30%),
+    radial-gradient(circle at 50% 70%, rgba(52, 211, 153, 0.15), transparent 40%);
+  filter: blur(18px);
+  pointer-events: none;
 }
