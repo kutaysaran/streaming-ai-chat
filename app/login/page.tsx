@@ -1,39 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Globe2, Menu, MessageCircle, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-
-const GoogleIcon = () => (
-  <svg viewBox="0 0 48 48" role="img" aria-hidden="true" className="h-5 w-5">
-    <path
-      fill="#EA4335"
-      d="M24 9.5c3.1 0 5.9 1.1 8.1 3.2l6-6.1C34.3 3.3 29.5 1.5 24 1.5 14.7 1.5 6.7 7.6 3.6 16l7.5 5.8C12.5 15.5 17.7 9.5 24 9.5z"
-    />
-    <path
-      fill="#4285F4"
-      d="M46.5 24.5c0-1.7-.2-3.4-.6-5H24v9.6h12.7c-.5 2.7-2 5-4.2 6.6l6.6 5.1c3.9-3.6 6.4-8.9 6.4-16.3z"
-    />
-    <path
-      fill="#FBBC05"
-      d="M11.1 28.3c-.5-1.5-.8-3.1-.8-4.8s.3-3.3.8-4.8l-7.5-5.8C1.2 15.7 0 19.7 0 23.5s1.2 7.8 3.6 11l7.5-6.2z"
-    />
-    <path
-      fill="#34A853"
-      d="M24 47.5c5.5 0 10.2-1.8 13.5-4.9l-6.6-5.1c-1.8 1.3-4.1 2.1-6.9 2.1-6.3 0-11.6-4-13.4-9.6l-7.5 5.8C6.7 40.4 14.7 47.5 24 47.5z"
-    />
-  </svg>
-);
-
-const AppleIcon = () => (
-  <svg viewBox="0 0 24 24" role="img" aria-hidden="true" className="h-5 w-5">
-    <path
-      fill="currentColor"
-      d="M17.477 12.585c-.023-2.286 1.87-3.389 1.957-3.445-1.067-1.56-2.722-1.773-3.305-1.8-1.408-.147-2.746.83-3.458.83-.715 0-1.816-.81-2.983-.79-1.53.023-2.952.89-3.74 2.256-1.602 2.77-.406 6.86 1.15 9.1.76 1.095 1.664 2.322 2.85 2.278 1.145-.045 1.576-.735 2.96-.735 1.383 0 1.775.735 2.98.711 1.233-.019 2.011-1.093 2.754-2.195.893-1.318 1.256-2.595 1.278-2.66-.028-.013-2.45-.94-2.483-3.25zM14.81 5.26c.64-.776 1.067-1.853.95-2.93-.92.037-2.033.61-2.693 1.383-.59.686-1.107 1.79-.97 2.84 1.02.08 2.07-.517 2.713-1.293z"
-    />
-  </svg>
-);
+import { GoogleIcon } from "@/components/icons/google";
+import { AppleIcon } from "@/components/icons/apple";
 
 export default function LoginPage() {
   return (
@@ -49,14 +22,14 @@ export default function LoginPage() {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <span className="text-lg font-extrabold text-primary">C</span>
-              </div>
-              <span className="text-lg font-semibold text-foreground">
-                ChatAPP
-              </span>
-            </div>
+            <Image
+              src="/chat-app-logo.png"
+              alt="ChatAPP"
+              width={170}
+              height={52}
+              className="h-10 w-auto sm:h-12"
+              priority
+            />
           </div>
 
           <nav className="hidden items-center gap-2 rounded-full border border-border bg-white px-2 py-1 text-sm font-medium text-foreground lg:flex">
@@ -194,13 +167,16 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="relative hidden w-[45%] overflow-hidden bg-gradient-to-br from-emerald-800 via-emerald-900 to-black lg:block">
-          <div className="absolute inset-0 bg-grid opacity-40" />
-          <div className="hero-glow absolute inset-0" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-[72%] w-[72%] rounded-full border border-emerald-500/20 bg-emerald-500/5 blur-0" />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+        <section className="relative hidden w-[45%] overflow-hidden bg-black lg:block">
+          <Image
+            src="/connection.png"
+            alt="Network connection visualization"
+            fill
+            className="object-cover"
+            priority
+            sizes="50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         </section>
       </main>
     </div>
