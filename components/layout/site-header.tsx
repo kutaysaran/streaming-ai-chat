@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Globe2, Menu, MessageCircle, UserRound } from "lucide-react";
+import { Globe2, Menu, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AuthButtons } from "@/components/auth/auth-buttons";
 
 type SiteHeaderProps = {
   className?: string;
@@ -49,35 +50,7 @@ export function SiteHeader({ className }: SiteHeaderProps) {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <Button
-            asChild
-            variant="secondary"
-            size="sm"
-            className="hidden rounded-full px-4 text-sm font-semibold text-primary sm:inline-flex"
-          >
-            <Link href="/login">Join Free</Link>
-          </Button>
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="hidden rounded-full border border-border px-4 text-sm font-semibold sm:inline-flex"
-          >
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            className="border border-border text-foreground sm:hidden"
-            aria-label="Profile"
-          >
-            <Link href="/login">
-              <UserRound className="h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
+        <AuthButtons />
       </div>
     </header>
   );

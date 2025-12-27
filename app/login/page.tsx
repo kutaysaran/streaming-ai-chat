@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,8 +11,77 @@ import { Label } from "@/components/ui/label";
 import { GoogleIcon } from "@/components/icons/google";
 import { AppleIcon } from "@/components/icons/apple";
 import { SiteHeader } from "@/components/layout/site-header";
+import { getBrowserClient } from "@/lib/supabase-browser";
+
+type Mode = "signup" | "signin";
 
 export default function LoginPage() {
+  const supabase = useMemo(() => getBrowserClient(), []);
+  const router = useRouter();
+  const [mode, setMode] = useState<Mode>("signup");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    terms: false,
+  });
+
+  const onChange = (field: keyof typeof form, value: string | boolean) => {
+    setForm((f) => ({ ...f, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!form.email || !form.password) {
+      setError("Email and password are required.");
+      return;
+    }
+    if (mode === "signup" && !form.terms) {
+      setError("Please accept the terms & policy.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (mode === "signup") {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: {
+            data: { name: form.name || null },
+          },
+        });
+        if (signUpError) throw signUpError;
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: form.email,
+          password: form.password,
+        });
+        if (signInError) throw signInError;
+      }
+
+      router.push("/chat");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setError(null);
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/chat` },
+    });
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <SiteHeader />
@@ -16,21 +89,43 @@ export default function LoginPage() {
       <main className="flex flex-1 flex-col lg:flex-row">
         <section className="flex w-full items-center justify-center py-10 lg:w-[55%] lg:py-0">
           <div className="container flex max-w-xl flex-col gap-10">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                Get Started Now
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Create your account to start chatting with AI characters in
-                seconds.
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                  {mode === "signup" ? "Get Started Now" : "Welcome back"}
+                </h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {mode === "signup"
+                    ? "Create your account to start chatting with AI characters in seconds."
+                    : "Sign in to continue your conversations."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode(mode === "signup" ? "signin" : "signup");
+                  setError(null);
+                }}
+                className="text-sm font-semibold text-primary hover:underline"
+              >
+                {mode === "signup" ? "Sign in" : "Create account"}
+              </button>
             </div>
 
-            <form className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" placeholder="Enter your name" />
-              </div>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {mode === "signup" && (
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    placeholder="Enter your name"
+                    value={form.name}
+                    onChange={(e) => onChange("name", e.target.value)}
+                    autoComplete="name"
+                  />
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
@@ -39,6 +134,10 @@ export default function LoginPage() {
                   name="email"
                   type="email"
                   placeholder="Enter your email"
+                  value={form.email}
+                  onChange={(e) => onChange("email", e.target.value)}
+                  autoComplete="email"
+                  required
                 />
               </div>
 
@@ -48,28 +147,49 @@ export default function LoginPage() {
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="Name"
+                  placeholder="Enter your password"
+                  value={form.password}
+                  onChange={(e) => onChange("password", e.target.value)}
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                  required
                 />
               </div>
 
-              <div className="flex items-center gap-2 pt-2">
-                <Checkbox id="terms" name="terms" />
-                <Label
-                  htmlFor="terms"
-                  className="text-sm font-normal text-muted-foreground"
-                >
-                  I agree to the{" "}
-                  <Link
-                    href="#"
-                    className="font-semibold text-primary hover:underline"
+              {mode === "signup" && (
+                <div className="flex items-center gap-2 pt-2">
+                  <Checkbox
+                    id="terms"
+                    name="terms"
+                    checked={form.terms}
+                    onCheckedChange={(v) => onChange("terms", Boolean(v))}
+                  />
+                  <Label
+                    htmlFor="terms"
+                    className="text-sm font-normal text-muted-foreground"
                   >
-                    terms &amp; policy
-                  </Link>
-                </Label>
-              </div>
+                    I agree to the{" "}
+                    <Link
+                      href="#"
+                      className="font-semibold text-primary hover:underline"
+                    >
+                      terms &amp; policy
+                    </Link>
+                  </Label>
+                </div>
+              )}
 
-              <Button type="submit" className="h-12 w-full text-base">
-                Create Free Account
+              {error && (
+                <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
+
+              <Button type="submit" className="h-12 w-full text-base" disabled={loading}>
+                {loading
+                  ? "Please wait..."
+                  : mode === "signup"
+                  ? "Create Free Account"
+                  : "Sign In"}
               </Button>
 
               <div className="flex items-center gap-3 pt-2 text-xs text-muted-foreground">
@@ -83,6 +203,7 @@ export default function LoginPage() {
                   type="button"
                   variant="outline"
                   className="flex w-full items-center justify-center gap-2 rounded-full border-foreground/10 text-sm font-semibold text-foreground sm:w-auto sm:px-6"
+                  onClick={handleGoogle}
                 >
                   <GoogleIcon />
                   <span>Sign in with Google</span>
@@ -91,6 +212,7 @@ export default function LoginPage() {
                   type="button"
                   variant="outline"
                   className="flex w-full items-center justify-center gap-2 rounded-full border-foreground/10 text-sm font-semibold text-foreground sm:w-auto sm:px-6"
+                  disabled
                 >
                   <AppleIcon />
                   <span>Sign in with Apple</span>
@@ -98,13 +220,17 @@ export default function LoginPage() {
               </div>
 
               <p className="text-center text-sm text-muted-foreground">
-                Have an account?{" "}
-                <Link
-                  href="#"
+                {mode === "signup" ? "Have an account?" : "New here?"}{" "}
+                <button
+                  type="button"
                   className="font-semibold text-primary hover:underline"
+                  onClick={() => {
+                    setMode(mode === "signup" ? "signin" : "signup");
+                    setError(null);
+                  }}
                 >
-                  Sign In
-                </Link>
+                  {mode === "signup" ? "Sign In" : "Create Free Account"}
+                </button>
               </p>
             </form>
           </div>
