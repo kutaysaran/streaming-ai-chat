@@ -1,8 +1,15 @@
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
-export function AppleIcon(props: React.SVGProps<SVGSVGElement>) {
+export function AppleIcon({ className, ...props }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" role="img" aria-hidden="true" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      role="img"
+      aria-hidden="true"
+      className={cn("h-5 w-5", className)}
+      {...props}
+    >
       <path
         fill="currentColor"
         d="M17.477 12.585c-.023-2.286 1.87-3.389 1.957-3.445-1.067-1.56-2.722-1.773-3.305-1.8-1.408-.147-2.746.83-3.458.83-.715 0-1.816-.81-2.983-.79-1.53.023-2.952.89-3.74 2.256-1.602 2.77-.406 6.86 1.15 9.1.76 1.095 1.664 2.322 2.85 2.278 1.145-.045 1.576-.735 2.96-.735 1.383 0 1.775.735 2.98.711 1.233-.019 2.011-1.093 2.754-2.195.893-1.318 1.256-2.595 1.278-2.66-.028-.013-2.45-.94-2.483-3.25zM14.81 5.26c.64-.776 1.067-1.853.95-2.93-.92.037-2.033.61-2.693 1.383-.59.686-1.107 1.79-.97 2.84 1.02.08 2.07-.517 2.713-1.293z"

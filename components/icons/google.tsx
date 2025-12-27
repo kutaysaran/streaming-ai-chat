@@ -1,8 +1,15 @@
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
-export function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
+export function GoogleIcon({ className, ...props }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 48 48" role="img" aria-hidden="true" {...props}>
+    <svg
+      viewBox="0 0 48 48"
+      role="img"
+      aria-hidden="true"
+      className={cn("h-5 w-5", className)}
+      {...props}
+    >
       <path
         fill="#EA4335"
         d="M24 9.5c3.1 0 5.9 1.1 8.1 3.2l6-6.1C34.3 3.3 29.5 1.5 24 1.5 14.7 1.5 6.7 7.6 3.6 16l7.5 5.8C12.5 15.5 17.7 9.5 24 9.5z"
