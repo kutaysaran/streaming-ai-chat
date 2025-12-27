@@ -34,14 +34,14 @@ export function SiteHeader({ className }: SiteHeaderProps) {
 
         <nav className="hidden items-center gap-2 rounded-full border border-border bg-white px-2 py-1 text-sm font-medium text-foreground lg:flex">
           <Link
-            href="#"
+            href="/"
             className="flex items-center gap-2 rounded-full px-3 py-1 hover:bg-muted"
           >
             <Globe2 className="h-4 w-4 text-primary" strokeWidth={2.25} />
             <span>Explore</span>
           </Link>
           <Link
-            href="#"
+            href="/chat"
             className="flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-primary-foreground shadow-sm"
           >
             <MessageCircle className="h-4 w-4" strokeWidth={2.25} />
@@ -51,26 +51,31 @@ export function SiteHeader({ className }: SiteHeaderProps) {
 
         <div className="flex items-center gap-3">
           <Button
+            asChild
             variant="secondary"
             size="sm"
             className="hidden rounded-full px-4 text-sm font-semibold text-primary sm:inline-flex"
           >
-            Join Free
+            <Link href="/login">Join Free</Link>
           </Button>
           <Button
+            asChild
             variant="ghost"
             size="sm"
             className="hidden rounded-full border border-border px-4 text-sm font-semibold sm:inline-flex"
           >
-            Login
+            <Link href="/login">Login</Link>
           </Button>
           <Button
+            asChild
             variant="ghost"
             size="icon"
             className="border border-border text-foreground sm:hidden"
             aria-label="Profile"
           >
-            <UserRound className="h-5 w-5" />
+            <Link href="/login">
+              <UserRound className="h-5 w-5" />
+            </Link>
           </Button>
         </div>
       </div>
