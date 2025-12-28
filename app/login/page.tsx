@@ -99,9 +99,15 @@ function LoginPageInner() {
   const handleGoogle = async () => {
     setError(null);
     try {
-      await supabase.auth.signInWithOAuth({
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: `${window.location.origin}/chat` },
+      });
+      console.info("google oauth start", {
+        redirectTo: `${window.location.origin}/chat`,
+        hasError: !!oauthError,
+        errorMessage: oauthError?.message,
+        provider: data?.provider,
       });
       toast({
         title: "Redirecting to Google",
