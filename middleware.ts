@@ -20,11 +20,6 @@ export async function middleware(req: NextRequest) {
 
   // If Supabase is exchanging an auth code, allow it to complete without redirecting.
   const hasAuthCode = !!req.nextUrl.searchParams.get("code");
-  console.info("middleware:/chat", {
-    path: req.nextUrl.pathname,
-    hasAuthCode,
-    hasSession: !!session,
-  });
   if (hasAuthCode) {
     return res;
   }
