@@ -30,6 +30,7 @@ Open http://localhost:3000
 - Data flow: client chat page → `/api/chat` → Groq streaming → progressive UI update → Supabase persistence.
 - Profile guard ensures user/profile rows exist before thread ops.
 - Message rendering uses markdown (GFM) with code block styling and safe layout (no pre-in-p nesting).
+- Separation of concerns: chat page composes small UI components (header, lists, composer, markdown renderer) and hooks (`useProfileGuard`, `useThreads`, `useMessages`) so data fetching, streaming, and rendering stay isolated and testable.
 
 ## Testing
 - Add unit tests with Jest/Vitest (e.g., message formatting/markdown sanitizer).
