@@ -18,9 +18,11 @@ type MessagesResult = {
 export function useMessages({
   supabase,
   selectedThreadId,
+  onError,
 }: {
   supabase: SupabaseClient;
   selectedThreadId: string | null;
+  onError?: (message: string) => void;
 }): MessagesResult {
   const [messagesByThread, setMessagesByThread] = useState<Record<string, Message[]>>(
     {}
@@ -40,7 +42,10 @@ export function useMessages({
         .order("created_at", { ascending: true });
       if (cancelled) return;
       setLoadingMessages(false);
-      if (error) return;
+      if (error) {
+        onError?.("Message loading failed.");
+        return;
+      }
       const mapped: Message[] =
         data?.map((m) => ({
           id: m.id,
@@ -86,6 +91,7 @@ export function useMessages({
         content: userMsg.content,
       });
       if (insertErr) {
+        onError?.(insertErr.message || "Message sending failed.");
         setMessagesByThread((prev) => ({
           ...prev,
           [threadId]: prev[threadId]?.map((m) =>
@@ -111,6 +117,10 @@ export function useMessages({
       });
 
       if (!res.ok || !res.body) {
+        const text = await res.text().catch(() => "");
+        onError?.(
+          text || "Assistant response not found. Please try again."
+        );
         setMessagesByThread((prev) => ({
           ...prev,
           [threadId]: prev[threadId]?.map((m) =>
@@ -148,6 +158,7 @@ export function useMessages({
         .single();
 
       if (insertAssistantErr) {
+        onError?.(insertAssistantErr.message || "Assistant message saving failed.");
         setMessagesByThread((prev) => ({
           ...prev,
           [threadId]: prev[threadId]?.map((m) =>

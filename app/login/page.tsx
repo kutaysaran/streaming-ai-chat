@@ -12,12 +12,14 @@ import { GoogleIcon } from "@/components/icons/google";
 import { AppleIcon } from "@/components/icons/apple";
 import { SiteHeader } from "@/components/layout/site-header";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { useToast } from "@/components/ui/toast";
 
 type Mode = "signup" | "signin";
 
 export default function LoginPage() {
   const supabase = useMemo(() => getBrowserClient(), []);
   const router = useRouter();
+  const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("signup");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +58,13 @@ export default function LoginPage() {
           },
         });
         if (signUpError) throw signUpError;
+        toast({
+          title: "Account created",
+          description: "Check your email, then sign in to continue.",
+          variant: "success",
+        });
+        setMode("signin");
+        return;
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: form.email,
@@ -64,11 +73,21 @@ export default function LoginPage() {
         if (signInError) throw signInError;
       }
 
+      toast({
+        title: "Signed in",
+        description: "Welcome back!",
+        variant: "success",
+      });
       router.push("/chat");
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Something went wrong.";
       setError(message);
+      toast({
+        title: "Authentication failed",
+        description: message,
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -76,10 +95,26 @@ export default function LoginPage() {
 
   const handleGoogle = async () => {
     setError(null);
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/chat` },
-    });
+    try {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/chat` },
+      });
+      toast({
+        title: "Redirecting to Google",
+        description: "Complete sign in to continue.",
+        variant: "info",
+      });
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Google sign-in failed.";
+      setError(message);
+      toast({
+        title: "Google sign-in failed",
+        description: message,
+        variant: "error",
+      });
+    }
   };
 
   return (

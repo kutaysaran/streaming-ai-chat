@@ -9,6 +9,7 @@ import { ThreadListMobile } from "./components/ThreadListMobile";
 import { MessageList } from "./components/MessageList";
 import { Composer } from "./components/Composer";
 import { defaultCharacters } from "./constants";
+import { useToast } from "@/components/ui/toast";
 import { useProfileGuard } from "./hooks/useProfileGuard";
 import { useThreads } from "./hooks/useThreads";
 import { useMessages } from "./hooks/useMessages";
@@ -17,6 +18,7 @@ export default function ChatPage() {
   const supabase = useMemo(() => getBrowserClient(), []);
   const [showChatMobile, setShowChatMobile] = useState(false);
   const [input, setInput] = useState("");
+  const { toast } = useToast();
 
   const { userId, profileReady, loadingUser, ensureProfile } =
     useProfileGuard(supabase);
@@ -46,6 +48,12 @@ export default function ChatPage() {
   const { messages, loadingMessages, sendMessage } = useMessages({
     supabase,
     selectedThreadId,
+    onError: (msg) =>
+      toast({
+        title: "Operation failed",
+        description: msg,
+        variant: "error",
+      }),
   });
 
   useEffect(() => {
