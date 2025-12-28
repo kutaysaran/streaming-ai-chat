@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Bubble } from "./Bubble";
+import SystemOutput from "./SystemOutput";
 import { Message } from "../hooks/useMessages";
 
 type Props = {
@@ -34,11 +35,16 @@ export function MessageList({
       ) : (
         <div className="flex flex-col gap-4">
           {messages.map((msg) => (
-            <Bubble
-              key={msg.id}
-              text={msg.content}
-              from={msg.role === "user" ? "me" : "them"}
-            />
+            <div key={msg.id}>
+              {msg.role === "assistant" && msg.status === "streaming" && msg.content.trim() === "" ? (
+                <SystemOutput text="Thinking..." />
+              ) : (
+                <Bubble
+                  text={msg.content}
+                  from={msg.role === "user" ? "me" : "them"}
+                />
+              )}
+            </div>
           ))}
           <div ref={messagesEndRef} />
         </div>
