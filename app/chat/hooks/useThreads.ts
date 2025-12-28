@@ -27,11 +27,14 @@ export function useThreads({
   profileReady: boolean;
 }): ThreadsResult {
   const [threads, setThreads] = useState<Thread[]>([]);
-  const [threadsLoading, setThreadsLoading] = useState(false);
+  const [threadsLoading, setThreadsLoading] = useState(true);
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userId || !profileReady) return;
+    if (!userId || !profileReady) {
+      setThreadsLoading(true);
+      return;
+    }
     let cancelled = false;
     async function loadThreads() {
       setThreadsLoading(true);

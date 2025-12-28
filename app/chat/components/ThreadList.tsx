@@ -47,7 +47,7 @@ export function ThreadList({
         </div>
       )}
       <div className="flex-1 overflow-auto">
-        {threadsLoading ? (
+        {threadsLoading && (
           <div className="space-y-3 p-4">
             <div className="flex items-center gap-3">
               <Skeleton className="h-12 w-12 rounded-full" />
@@ -64,11 +64,14 @@ export function ThreadList({
               </div>
             </div>
           </div>
-        ) : threads.length === 0 ? (
+        )}
+        {!threadsLoading && threads.length === 0 && (
           <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
             No conversations yet. Choose a character above to start.
           </div>
-        ) : (
+        )}
+        {!threadsLoading &&
+          threads.length > 0 &&
           threads.map((thread) => (
             <div
               key={thread.id}
@@ -93,8 +96,7 @@ export function ThreadList({
                 <div className="mt-1 text-xs text-muted-foreground">Conversation</div>
               </div>
             </div>
-          ))
-        )}
+          ))}
       </div>
     </aside>
   );

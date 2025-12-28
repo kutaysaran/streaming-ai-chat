@@ -38,7 +38,10 @@ export function AuthButtons() {
     };
   }, [supabase]);
 
-  const goLogin = () => router.push("/login");
+  const goLogin = (mode?: "signup" | "signin") => {
+    const suffix = mode ? `?mode=${mode}` : "";
+    router.push(`/login${suffix}`);
+  };
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -107,7 +110,7 @@ export function AuthButtons() {
         variant="secondary"
         size="sm"
         className="hidden rounded-full px-4 text-sm font-semibold text-primary sm:inline-flex"
-        onClick={goLogin}
+        onClick={() => goLogin("signup")}
       >
         Join Free
       </Button>
@@ -115,7 +118,7 @@ export function AuthButtons() {
         variant="ghost"
         size="sm"
         className="hidden rounded-full border border-border px-4 text-sm font-semibold sm:inline-flex"
-        onClick={goLogin}
+        onClick={() => goLogin("signin")}
       >
         Login
       </Button>
@@ -124,7 +127,7 @@ export function AuthButtons() {
         size="icon"
         className="border border-border text-foreground sm:hidden"
         aria-label="Profile"
-        onClick={goLogin}
+        onClick={() => goLogin("signin")}
       >
         <UserRound className="h-5 w-5" />
       </Button>

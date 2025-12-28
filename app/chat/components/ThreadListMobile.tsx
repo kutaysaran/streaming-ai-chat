@@ -43,7 +43,7 @@ export function ThreadListMobile({
           />
         </div>
       )}
-      {threadsLoading ? (
+      {threadsLoading && (
         <div className="space-y-3">
           <div className="flex items-center gap-3 rounded-2xl border border-border bg-white px-4 py-3 shadow-sm">
             <Skeleton className="h-12 w-12 rounded-full" />
@@ -53,11 +53,14 @@ export function ThreadListMobile({
             </div>
           </div>
         </div>
-      ) : threads.length === 0 ? (
+      )}
+      {!threadsLoading && threads.length === 0 && (
         <div className="flex items-center justify-center rounded-2xl border border-border bg-white px-4 py-8 text-center text-sm text-muted-foreground shadow-sm">
           No conversations yet. Pick a character above to begin.
         </div>
-      ) : (
+      )}
+      {!threadsLoading &&
+        threads.length > 0 &&
         threads.map((thread) => (
           <div
             key={thread.id}
@@ -82,8 +85,7 @@ export function ThreadListMobile({
               <div className="mt-1 text-xs text-muted-foreground">Conversation</div>
             </div>
           </div>
-        ))
-      )}
+        ))}
     </section>
   );
 }

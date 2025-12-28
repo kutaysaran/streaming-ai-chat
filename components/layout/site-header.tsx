@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Globe2, Menu, MessageCircle } from "lucide-react";
+import { Globe2, Menu, MessageCircle, X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AuthButtons } from "@/components/auth/auth-buttons";
 
@@ -9,17 +12,19 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ className }: SiteHeaderProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className={`border-b border-border/70 ${className ?? ""}`}>
-      <div className="container flex h-16 items-center justify-between gap-4">
+    <header className={`${className ?? ""}`}>
+      <div className="container relative flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             className="border border-border text-foreground lg:hidden"
             aria-label="Open menu"
+            onClick={() => setMenuOpen((o) => !o)}
           >
-            <Menu className="h-5 w-5" />
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -51,6 +56,29 @@ export function SiteHeader({ className }: SiteHeaderProps) {
         </nav>
 
         <AuthButtons />
+
+        {menuOpen && (
+          <div className="absolute left-0 top-16 z-40 w-full border-b border-border bg-white shadow-lg lg:hidden">
+            <nav className="flex flex-col divide-y divide-border">
+              <Link
+                href="/"
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Globe2 className="h-4 w-4 text-primary" strokeWidth={2.25} />
+                <span>Explore</span>
+              </Link>
+              <Link
+                href="/chat"
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted"
+                onClick={() => setMenuOpen(false)}
+              >
+                <MessageCircle className="h-4 w-4" strokeWidth={2.25} />
+                <span>Chat</span>
+              </Link>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );

@@ -20,7 +20,7 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const { toast } = useToast();
 
-  const { userId, profileReady, loadingUser, ensureProfile } =
+  const { userId, profileReady, loadingUser, ensuringProfile, ensureProfile } =
     useProfileGuard(supabase);
 
   const {
@@ -112,7 +112,9 @@ export default function ChatPage() {
             newChatCharacterId={newChatCharacterId}
             onChangeCharacter={setNewChatCharacterId}
             onStartCharacter={() => void handleStartNewChat(newChatCharacterId)}
-            startDisabled={!userId || !profileReady}
+            startDisabled={
+              !userId || loadingUser || ensuringProfile || availableCharacters.length === 0
+            }
           />
 
           <div className={`mb-4 md:hidden ${showChatMobile ? "hidden" : "block"}`}>
@@ -125,7 +127,12 @@ export default function ChatPage() {
               newChatCharacterId={newChatCharacterId}
               onChangeCharacter={setNewChatCharacterId}
               onStartCharacter={() => void handleStartNewChat(newChatCharacterId, true)}
-              startDisabled={!userId || !profileReady}
+              startDisabled={
+                !userId ||
+                loadingUser ||
+                ensuringProfile ||
+                availableCharacters.length === 0
+              }
             />
           </div>
 

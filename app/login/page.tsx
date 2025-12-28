@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +19,7 @@ type Mode = "signup" | "signin";
 export default function LoginPage() {
   const supabase = useMemo(() => getBrowserClient(), []);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("signup");
   const [loading, setLoading] = useState(false);
@@ -34,22 +35,24 @@ export default function LoginPage() {
     setForm((f) => ({ ...f, [field]: value }));
   };
 
+  useEffect(() => {
+    const initialMode = searchParams.get("mode");
+    if (initialMode === "signin" || initialMode === "signup") {
+      setMode(initialMode);
+    }
+  }, [searchParams]);
+
+  const isSignup = mode === "signup";
+  const isFormValid =
+    !!form.email && !!form.password && (!isSignup || form.terms) && !loading;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!form.email || !form.password) {
-      setError("Email and password are required.");
-      return;
-    }
-    if (mode === "signup" && !form.terms) {
-      setError("Please accept the terms & policy.");
-      return;
-    }
-
     setLoading(true);
     try {
-      if (mode === "signup") {
+      if (isSignup) {
         const { error: signUpError } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
@@ -129,9 +132,9 @@ export default function LoginPage() {
                 <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                   {mode === "signup" ? "Get Started Now" : "Welcome back"}
                 </h1>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {mode === "signup"
-                    ? "Create your account to start chatting with AI characters in seconds."
+                    ? ""
                     : "Sign in to continue your conversations."}
                 </p>
               </div>
@@ -219,7 +222,11 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <Button type="submit" className="h-12 w-full text-base" disabled={loading}>
+              <Button
+                type="submit"
+                className="h-12 w-full text-base"
+                disabled={loading || !isFormValid}
+              >
                 {loading
                   ? "Please wait..."
                   : mode === "signup"
