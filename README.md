@@ -40,3 +40,4 @@ Open http://localhost:3000
 
 ## Known issues
 - Google OAuth works reliably on Safari and Android Chrome. On some desktop Chrome setups, Google sign-in may intermittently fail to establish a session even after redirect (refresh does not resolve). If encountered, try another browser or clear cookies and retry.
+- Rarely, after mobile login, the chat page can initially render in desktop layout; a refresh fixes it.
