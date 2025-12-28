@@ -20,18 +20,16 @@ type ThreadsResult = {
 export function useThreads({
   supabase,
   userId,
-  profileReady,
 }: {
   supabase: SupabaseClient;
   userId: string | null;
-  profileReady: boolean;
 }): ThreadsResult {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [threadsLoading, setThreadsLoading] = useState(true);
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userId || !profileReady) {
+    if (!userId) {
       setThreadsLoading(true);
       return;
     }
@@ -59,7 +57,7 @@ export function useThreads({
     return () => {
       cancelled = true;
     };
-  }, [profileReady, supabase, userId]);
+  }, [supabase, userId]);
 
   const availableCharacters = useMemo(
     () =>
@@ -77,7 +75,7 @@ export function useThreads({
 
   const startThreadFromCharacter = useCallback(
     async (character: Thread, _isMobile?: boolean) => {
-      if (!userId || !profileReady) return;
+      if (!userId) return;
       const existing = threads.find(
         (t) =>
           t.title &&
@@ -102,7 +100,7 @@ export function useThreads({
       setThreads((prev) => [...prev, newThread]);
       setSelectedThreadId(newThread.id);
     },
-    [profileReady, supabase, threads, userId]
+    [supabase, threads, userId]
   );
 
   return {

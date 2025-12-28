@@ -30,7 +30,7 @@ export default function ChatPage() {
     selectedThreadId,
     selectThread,
     startThreadFromCharacter,
-  } = useThreads({ supabase, userId, profileReady });
+  } = useThreads({ supabase, userId });
 
   const [newChatCharacterId, setNewChatCharacterId] = useState<string>(
     availableCharacters[0]?.id ?? defaultCharacters[0].id
