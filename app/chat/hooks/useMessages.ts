@@ -12,7 +12,7 @@ export type Message = {
 type MessagesResult = {
   messages: Message[];
   loadingMessages: boolean;
-  sendMessage: (input: string, threadId: string) => Promise<void>;
+  sendMessage: (input: string, threadId: string, systemPrompt?: string) => Promise<void>;
 };
 
 export function useMessages({
@@ -65,7 +65,7 @@ export function useMessages({
   }, [selectedThreadId, supabase]);
 
   const sendMessage = useCallback(
-    async (input: string, threadId: string) => {
+    async (input: string, threadId: string, systemPrompt?: string) => {
       if (!input.trim()) return;
       const userMsg: Message = {
         id: `temp-${crypto.randomUUID()}`,
@@ -107,6 +107,7 @@ export function useMessages({
         body: JSON.stringify({
           threadId,
           messages: [
+            ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
             ...((messagesByThread[threadId] ?? []).map((m) => ({
               role: m.role,
               content: m.content,

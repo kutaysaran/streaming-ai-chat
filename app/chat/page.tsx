@@ -8,7 +8,7 @@ import { ThreadList } from "./components/ThreadList";
 import { ThreadListMobile } from "./components/ThreadListMobile";
 import { MessageList } from "./components/MessageList";
 import { Composer } from "./components/Composer";
-import { defaultCharacters } from "./constants";
+import { defaultCharacters, promptForTitle } from "./constants";
 import { useToast } from "@/components/ui/toast";
 import { useProfileGuard } from "./hooks/useProfileGuard";
 import { useThreads } from "./hooks/useThreads";
@@ -85,7 +85,10 @@ export default function ChatPage() {
     if (!input.trim() || !selectedThreadId) return;
     const messageToSend = input;
     setInput("");
-    await sendMessage(messageToSend, selectedThreadId);
+    const systemPrompt = promptForTitle(
+      threads.find((t) => t.id === selectedThreadId)?.title
+    );
+    await sendMessage(messageToSend, selectedThreadId, systemPrompt);
   };
 
   const disableInput =
