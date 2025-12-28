@@ -7,8 +7,8 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-white overflow-hidden">
       <SiteHeader />
 
-      <main className="flex flex-1 flex-col overflow-hidden">
-        <div className="container flex h-[calc(100vh-64px)] max-w-7xl flex-col gap-10 py-8 sm:py-10 lg:py-12">
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        <div className="container flex min-h-[calc(100vh-64px)] max-w-7xl flex-col gap-10 py-8 sm:py-10 lg:py-12">
           <h1 className="text-center text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Our AI Characters
           </h1>

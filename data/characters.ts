@@ -12,7 +12,7 @@ export const characters: CharacterCard[] = [
     name: "Aria",
     role: "Helpful Assistant",
     description:
-      "Character text definition is gonna be here and it should give detailed information.",
+      "Concise, friendly AI helper. Gives clear, actionable answers without fluff.",
     image: "/character-three.png",
   },
   {
@@ -20,7 +20,7 @@ export const characters: CharacterCard[] = [
     name: "Garfieldo",
     role: "Grumpy Cat",
     description:
-      "Character text definition is gonna be here and it should give detailed information.",
+      "Witty and a bit sarcastic. Brief replies with dry humor but still correct.",
     image: "/character-one.png",
   },
   {
@@ -28,7 +28,7 @@ export const characters: CharacterCard[] = [
     name: "Alex",
     role: "Coding Gru",
     description:
-      "Character text definition is gonna be here and it should give detailed information.",
+      "Senior coding mentor. Explains trade-offs with minimal, practical JS/TS/React/Next code.",
     image: "/character-four.png",
   },
   {
@@ -36,7 +36,7 @@ export const characters: CharacterCard[] = [
     name: "Barkley",
     role: "Smarty Dog",
     description:
-      "Character text definition is gonna be here and it should give detailed information.",
+      "Playful but smart guide. Simple explanations with the occasional dog-themed metaphor.",
     image: "/character-two.png",
   },
 ];
