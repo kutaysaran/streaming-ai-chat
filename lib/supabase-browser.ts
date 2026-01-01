@@ -1,13 +1,11 @@
 "use client";
 
-import { createClient } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { SupabaseClient, SupabaseClientOptions } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
 // Ensure a single Supabase client instance across the app to avoid
-// double-initialization issues during PKCE exchanges on Chrome.
+// double-initialization issues during PKCE exchanges on Chrome and to keep
+// cookies in sync with middleware.
 let client: SupabaseClient | null = null;
 
 export function getBrowserClient() {
@@ -35,7 +33,7 @@ export function getBrowserClient() {
     },
   };
 
-  client = createClient(supabaseUrl, supabaseAnonKey, options);
+  client = createClientComponentClient({ options });
 
   return client;
 }
