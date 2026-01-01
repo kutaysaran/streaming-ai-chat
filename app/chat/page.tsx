@@ -59,11 +59,46 @@ export default function ChatPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
-    if (url.searchParams.has("code") || url.searchParams.has("state")) {
+    const code = url.searchParams.get("code");
+    const hasStateOnly = !code && url.searchParams.has("state");
+
+    // Remove the PKCE verifier after Supabase finishes exchanging the code so
+    // Chrome doesn't get stuck with a lingering `-code-verifier` key.
+    const cleanupCodeVerifier = () => {
+      try {
+        const storageKey = (supabase.auth as any)?.storageKey;
+        if (storageKey) {
+          window.localStorage.removeItem(`${storageKey}-code-verifier`);
+        }
+      } catch {
+        // Best-effort cleanup; ignore if storage is unavailable.
+      }
+    };
+
+    const clearAuthParams = () => {
       url.search = "";
       window.history.replaceState({}, "", url.toString());
+    };
+
+    if (code) {
+      void supabase.auth
+        .exchangeCodeForSession(code)
+        .catch(() => {
+          // Even if the exchange fails (e.g., already handled by middleware),
+          // clear the verifier to avoid the Chrome-only leftover key.
+          cleanupCodeVerifier();
+        })
+        .finally(() => {
+          cleanupCodeVerifier();
+          clearAuthParams();
+        });
+      return;
     }
-  }, []);
+
+    if (hasStateOnly) {
+      clearAuthParams();
+    }
+  }, [supabase]);
 
   const handleStartNewChat = async (characterId: string, isMobile?: boolean) => {
     const character = availableCharacters.find((c) => c.id === characterId);
